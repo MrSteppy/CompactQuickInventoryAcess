@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import steptech.compactquickinventoryaccess.commands.WorkbenchCommand;
 import steptech.compactquickinventoryaccess.listener.QuickAccessListener;
+import steptech.compactquickinventoryaccess.modules.ShulkerBoxModule;
 import steptech.compactquickinventoryaccess.modules.WorkbenchModule;
 import steptech.steptechpluginframework.infrastructure.commands.commandManager.StepTechCommandManager;
 
@@ -21,6 +22,7 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
 
         //modules
         final WorkbenchModule workbenchModule = new WorkbenchModule(this.moduleHandler);
+        new ShulkerBoxModule(this.moduleHandler);
 
         //listener
         new QuickAccessListener(this);

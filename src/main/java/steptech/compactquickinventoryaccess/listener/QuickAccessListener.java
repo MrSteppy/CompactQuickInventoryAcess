@@ -9,6 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
@@ -45,9 +46,17 @@ public class QuickAccessListener implements Listener {
     }
 
     @EventHandler (ignoreCancelled = true)
+    public void onInventoryOpen(@NotNull InventoryOpenEvent event) {
+        this.moduleHandler.trackInventoryOpen(((Player) event.getPlayer()));
+    }
+
+    @EventHandler (ignoreCancelled = true)
     public void onInventoryClose(@NotNull InventoryCloseEvent event) {
+        final InventoryView view = event.getView();
         if (event.getReason() != InventoryCloseEvent.Reason.OPEN_NEW)
-            this.moduleHandler.trackInventoryClose((Player) event.getPlayer());
+            this.moduleHandler.trackFinalInventoryClose(view);
+        else
+            this.moduleHandler.trackTempInventoryClose(view);
     }
 
     @EventHandler (ignoreCancelled = true)
