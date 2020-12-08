@@ -1,0 +1,8 @@
+name: CompactQuickInventoryAccess
+version: ${project.version}
+main: steptech.compactquickinventoryaccess.CompactQuickInventoryAccess
+api-version: 1.16
+authors: [ Steppy ]
+description: Makes it possible to open workbenches, shulkerboxes and enderchests to be opened directly from the inventory
+depend:
+  - StepTechApi
