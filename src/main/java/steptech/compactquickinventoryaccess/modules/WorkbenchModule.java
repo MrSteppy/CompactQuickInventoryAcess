@@ -3,7 +3,6 @@ package steptech.compactquickinventoryaccess.modules;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
