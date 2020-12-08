@@ -41,10 +41,7 @@ public class WorkbenchModule implements QuickAccessModule {
         return new ModificationResultWrapper(() -> Objects.requireNonNull(player.openWorkbench(null, true)),
                 inventoryView -> {
             final ItemStack slotItem = inventoryView.getItem(rawSlot);
-            System.out.println("slot item: " + slotItem + " on raw slot" + rawSlot);
             if (slotItem == null || slotItem.getType() == Material.AIR) {
-                System.out.println("workbench: " + workbench);
-                System.out.println("view: " + inventoryView);
                 inventoryView.setItem(rawSlot, workbench);
             } else {
                 final Location location = player.getLocation();
