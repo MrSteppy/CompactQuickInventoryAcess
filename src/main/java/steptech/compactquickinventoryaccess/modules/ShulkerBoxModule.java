@@ -16,8 +16,6 @@ import steptech.compactquickinventoryaccess.ModuleHandler;
 import steptech.compactquickinventoryaccess.api.QuickAccessModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
-import java.util.Objects;
-
 public class ShulkerBoxModule implements QuickAccessModule {
     private static final String PERMISSION = CompactQuickInventoryAccess.PERMISSION_NODE + ".shulkerbox";
 
@@ -41,9 +39,10 @@ public class ShulkerBoxModule implements QuickAccessModule {
 
     @Override
     public @NotNull ModuleInstructionWrapper modifyInventory(@NotNull Player player, int rawSlot) {
-        final InventoryView openInventory = player.getOpenInventory();
+        final InventoryView modificationView = player.getOpenInventory();
         //remove shulker box from inventory
-        final ItemStack shulkerBoxItem = Objects.requireNonNull(QuickAccessModule.takeOneFromItemStack(openInventory, rawSlot));
+        final ItemStack shulkerBoxItem = QuickAccessModule.takeOneFromItemStack(modificationView, rawSlot);
+        assert shulkerBoxItem != null;
 
         //create shulkerbox from item
         final ItemMeta itemMeta = shulkerBoxItem.getItemMeta();

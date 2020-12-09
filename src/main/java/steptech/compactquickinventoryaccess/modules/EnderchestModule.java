@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
 import steptech.compactquickinventoryaccess.ModuleHandler;
 import steptech.compactquickinventoryaccess.api.QuickAccessModule;
@@ -33,13 +32,6 @@ public class EnderchestModule implements QuickAccessModule {
         final boolean checkEnchantment = itemStack.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH);
 
         return checkMaterial && checkEnchantment;
-    }
-
-    private @Nullable ItemStack findMatchingPickaxe(@NotNull Player player) {
-        return QuickAccessModule.getInventoryContents(player).stream()
-                .filter(itemStack -> itemStack != null && matchesPickaxeRequirements(itemStack))
-                .findFirst()
-                .orElse(null);
     }
 
     private int findMatchingPickaxeSlot(@NotNull InventoryView inventoryView) {

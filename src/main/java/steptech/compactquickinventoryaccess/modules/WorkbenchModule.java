@@ -9,8 +9,6 @@ import steptech.compactquickinventoryaccess.ModuleHandler;
 import steptech.compactquickinventoryaccess.api.QuickAccessModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
-import java.util.Objects;
-
 public class WorkbenchModule implements QuickAccessModule {
     private static final String PERMISSION = CompactQuickInventoryAccess.PERMISSION_NODE + ".workbench";
 
@@ -34,7 +32,8 @@ public class WorkbenchModule implements QuickAccessModule {
 
     @Override
     public @NotNull ModuleInstructionWrapper modifyInventory(@NotNull Player player, int rawSlot) {
-        final ItemStack workbench = Objects.requireNonNull(QuickAccessModule.takeOneFromItemStack(player.getOpenInventory(), rawSlot));
+        final ItemStack workbench = QuickAccessModule.takeOneFromItemStack(player.getOpenInventory(), rawSlot);
+        assert workbench != null;
 
         return new ModuleInstructionWrapper(() -> player.openWorkbench(null, true),
                 closedView -> {},
