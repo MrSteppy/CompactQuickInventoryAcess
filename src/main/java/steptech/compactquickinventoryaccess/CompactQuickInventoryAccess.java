@@ -2,6 +2,7 @@ package steptech.compactquickinventoryaccess;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import steptech.compactquickinventoryaccess.commands.EnderchestCommand;
 import steptech.compactquickinventoryaccess.commands.WorkbenchCommand;
 import steptech.compactquickinventoryaccess.listener.QuickAccessListener;
 import steptech.compactquickinventoryaccess.modules.EnderchestModule;
@@ -12,6 +13,7 @@ import steptech.steptechpluginframework.infrastructure.commands.commandManager.S
 public final class CompactQuickInventoryAccess extends JavaPlugin {
     //hard config
     public static final String PERMISSION_NODE = "compactquickinventoryaccess";
+    public static final String COMMAND_PERMISSION_NODE = PERMISSION_NODE + ".command";
 
     //handler
     private ModuleHandler moduleHandler;
@@ -32,6 +34,7 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         //commands
         final StepTechCommandManager manager = new StepTechCommandManager(this);
         new WorkbenchCommand(manager, workbenchModule, this.moduleHandler);
+        new EnderchestCommand(manager, enderchestModule, this.moduleHandler);
     }
 
     @Override

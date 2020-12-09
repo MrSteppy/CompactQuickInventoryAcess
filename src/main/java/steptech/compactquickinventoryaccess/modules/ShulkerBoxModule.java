@@ -1,6 +1,7 @@
 package steptech.compactquickinventoryaccess.modules;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
@@ -56,12 +57,16 @@ public class ShulkerBoxModule implements QuickAccessModule {
                     : Bukkit.createInventory(player, InventoryType.SHULKER_BOX);
             inventory.setContents(shulkerBox.getInventory().getContents());
 
+            player.playSound(player.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, 1, 1);
             return player.openInventory(inventory);
         }, closedView -> {
             shulkerBox.getInventory().setContents(closedView.getTopInventory().getContents()); //update contents
             //set block state and item meta
             blockStateMeta.setBlockState(shulkerBox);
             shulkerBoxItem.setItemMeta(blockStateMeta);
-        }, () -> QuickAccessModule.putItemBack(player.getOpenInventory(), shulkerBoxItem, rawSlot));
+        }, () -> {
+            player.playSound(player.getLocation(), Sound.BLOCK_SHULKER_BOX_CLOSE, 1, 1);
+            QuickAccessModule.putItemBack(player.getOpenInventory(), shulkerBoxItem, rawSlot);
+        });
     }
 }

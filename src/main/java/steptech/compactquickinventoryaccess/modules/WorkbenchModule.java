@@ -1,6 +1,7 @@
 package steptech.compactquickinventoryaccess.modules;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -24,9 +25,7 @@ public class WorkbenchModule implements QuickAccessModule {
     @Override
     public boolean matchesOtherRequirements(@NotNull Player player) {
         final boolean permission = player.hasPermission(PERMISSION);
-        if (!permission) {
-            player.sendActionBar("Missing permission " + PERMISSION);
-        }
+        if (!permission) player.sendActionBar("Missing permission " + PERMISSION);
         return permission;
     }
 
@@ -35,8 +34,14 @@ public class WorkbenchModule implements QuickAccessModule {
         final ItemStack workbench = QuickAccessModule.takeOneFromItemStack(player.getOpenInventory(), rawSlot);
         assert workbench != null;
 
-        return new ModuleInstructionWrapper(() -> player.openWorkbench(null, true),
-                closedView -> {},
-                () -> QuickAccessModule.putItemBack(player.getOpenInventory(), workbench, rawSlot));
+        return new ModuleInstructionWrapper(() -> {
+            player.playSound(player.getLocation(), Sound.BLOCK_WOOD_PLACE, 1, 1);
+            return player.openWorkbench(null, true);
+        }, closedView -> {
+
+        }, () -> {
+            player.playSound(player.getLocation(), Sound.BLOCK_WOOD_BREAK, 1, 1);
+            QuickAccessModule.putItemBack(player.getOpenInventory(), workbench, rawSlot);
+        });
     }
 }

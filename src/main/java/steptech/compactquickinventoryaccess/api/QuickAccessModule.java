@@ -47,7 +47,7 @@ public interface QuickAccessModule {
         final ItemStack itemStack = inventoryView.getItem(rawSlot);
         if (itemStack != null) {
             final ItemMeta itemMeta = itemStack.getItemMeta();
-            if (itemStack instanceof Damageable) {
+            if (itemMeta instanceof Damageable) {
                 //apply damage
                 Damageable damageable = ((Damageable) itemMeta);
                 damageable.setDamage(damageable.getDamage() + damage);
@@ -58,8 +58,8 @@ public interface QuickAccessModule {
                 //if necessary break item
                 if (damageable.getDamage() >= itemStack.getType().getMaxDurability()) {
                     inventoryView.setItem(rawSlot, null);
-                    final Location location = inventoryView.getPlayer().getLocation();
-                    location.getWorld().playSound(location, Sound.ENTITY_ITEM_BREAK, 1, 1);
+                    final Player player = (Player) inventoryView.getPlayer();
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
                 }
             }
         }

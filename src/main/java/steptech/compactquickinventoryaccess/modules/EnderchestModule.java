@@ -1,6 +1,7 @@
 package steptech.compactquickinventoryaccess.modules;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -29,7 +30,7 @@ public class EnderchestModule implements QuickAccessModule {
         final boolean checkMaterial = material == Material.DIAMOND_PICKAXE || material == Material.NETHERITE_PICKAXE;
 
         //check enchantments
-        final boolean checkEnchantment = itemStack.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH);
+        final boolean checkEnchantment = itemStack.hasItemMeta() && itemStack.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH);
 
         return checkMaterial && checkEnchantment;
     }
@@ -52,7 +53,7 @@ public class EnderchestModule implements QuickAccessModule {
         //check for pickaxe
         final boolean pickaxe = findMatchingPickaxeSlot(player.getOpenInventory()) > -1;
         if (!pickaxe) {
-            player.sendActionBar("Diamond or Netherrite Pickaxe with SilkTouch needed!");
+            player.sendActionBar("Diamond or Netherite Pickaxe with SilkTouch needed!");
         }
 
         return permission && pickaxe;
@@ -69,8 +70,12 @@ public class EnderchestModule implements QuickAccessModule {
         final ItemStack enderchest = QuickAccessModule.takeOneFromItemStack(modificationView, rawSlot);
         assert enderchest != null;
 
-        return new ModuleInstructionWrapper(() -> player.openInventory(player.getEnderChest()),
-                closedView -> {},
-                () -> QuickAccessModule.putItemBack(player.getOpenInventory(), enderchest, rawSlot));
+        return new ModuleInstructionWrapper(() -> {
+            player.playSound(player.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 1, 1);
+            return player.openInventory(player.getEnderChest());
+        }, closedView -> {}, () -> {
+            player.playSound(player.getLocation(), Sound.BLOCK_ENDER_CHEST_CLOSE, 1, 1);
+            QuickAccessModule.putItemBack(player.getOpenInventory(), enderchest, rawSlot);
+        });
     }
 }
