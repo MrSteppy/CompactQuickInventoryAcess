@@ -47,7 +47,7 @@ public class QuickAccessListener implements Listener {
 
     @EventHandler (ignoreCancelled = true)
     public void onInventoryOpen(@NotNull InventoryOpenEvent event) {
-        this.moduleHandler.trackInventoryOpen(((Player) event.getPlayer()));
+        this.moduleHandler.trackInventoryOpen(event.getView());
     }
 
     @EventHandler (ignoreCancelled = true)

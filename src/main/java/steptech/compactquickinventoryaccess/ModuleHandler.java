@@ -43,24 +43,12 @@ public class ModuleHandler {
         return inventory.getType() == InventoryType.CRAFTING; //you can't open crafting inventories
     }
 
-    /*TODO
-    *  onActivation add as pending
-    *  onOpen check for pending ones and else create one for the current inventory view, track current
-    *  onTempClose call temp close
-    *  onFinalClose call temp close, track and open previous, call final mod
-    *  onLogout final Close all tracked*/
-
-
     private @Nullable ModuleInstructionWrapper determineCurrentInventoryView(@NotNull Player player) {
         final ModuleInstructionWrapper moduleInstructionWrapper = this.trackedModuleInstructions.get(player);
         if (moduleInstructionWrapper != null) return moduleInstructionWrapper;
         final Inventory topInventory = player.getOpenInventory().getTopInventory();
         if (!isForbiddenInventory(topInventory))
-            return new ModuleInstructionWrapper(() -> player.openInventory(topInventory),
-                    closedView -> {
-                    },
-                    currentView -> {
-                    });
+            return new ModuleInstructionWrapper(() -> player.openInventory(topInventory), closedView -> {}, () -> {});
         return null;
     }
 
@@ -78,7 +66,7 @@ public class ModuleHandler {
                 //set current as previous
                 moduleInstructionWrapper.setPrevious(determineCurrentInventoryView(player));
 
-                //put on pending
+                //set pending
                 this.pendingModuleInstructions.put(player, moduleInstructionWrapper);
 
                 //open inventory
@@ -91,70 +79,55 @@ public class ModuleHandler {
 
     public void trackTempInventoryClose(@NotNull InventoryView tempClosedView) {
         final Player player = (Player) tempClosedView.getPlayer();
-        final ModuleInstructionWrapper moduleInstructionWrapper = this.trackedModuleInstructions.remove(player);
-        if (moduleInstructionWrapper != null) {
+        final ModuleInstructionWrapper moduleInstructionWrapper = this.trackedModuleInstructions.get(player);
+        if (moduleInstructionWrapper != null)
             moduleInstructionWrapper.getTempInventoryCloser().onTempInventoryClose(tempClosedView);
+    }
+
+    public void trackInventoryOpen(@NotNull InventoryView openingView) {
+        final Player player = (Player) openingView.getPlayer();
+        final ModuleInstructionWrapper pending = this.pendingModuleInstructions.remove(player);
+        final ModuleInstructionWrapper current = this.trackedModuleInstructions.get(player);
+        if (pending != null) {
+            this.trackedModuleInstructions.put(player, pending); //track
+        } else if (current != null) {
+            //when an inventory is opened, which is not from a module
+
+            final ModuleInstructionWrapper moduleInstructionWrapper = new ModuleInstructionWrapper(() -> openingView,
+                    closedView -> {},
+                    () -> {});
+            moduleInstructionWrapper.setPrevious(current);
+
+            this.trackedModuleInstructions.put(player, moduleInstructionWrapper); //track
         }
     }
 
-    public void trackInventoryOpen(@NotNull Player player) {
-        final ModuleInstructionWrapper moduleInstructionWrapper = this.pendingModuleInstructions.remove(player);
-        if (moduleInstructionWrapper != null) {
-            //track
-            this.trackedModuleInstructions.put(player, moduleInstructionWrapper);
-        }
-    }
-
-    private @Nullable InventoryView finalCloseInventory(@NotNull InventoryView closedInventoryView) {
-        final Player player = (Player) closedInventoryView.getPlayer();
+    private void finalCloseInventory(@NotNull Player player) {
         final ModuleInstructionWrapper tracked = this.trackedModuleInstructions.remove(player);
-        InventoryView currentView = null;
         if (tracked != null) {
             final ModuleInstructionWrapper previous = tracked.getPrevious(); //get previous
 
             if (previous != null) {
-                //track previous
-                this.trackedModuleInstructions.put(player, previous);
-
                 //open inventory
-                currentView = previous.getInventoryOpener().openInventory();
-            }
-            if (currentView == null) {
-                currentView = player.getOpenInventory();
+                previous.getInventoryOpener().openInventory();
+
+                //track
+                this.trackedModuleInstructions.put(player, previous);
             }
 
             //call final modification
-            tracked.getFinalInventoryCloser().applyFinalModification(currentView);
+            tracked.getFinalInventoryCloser().applyFinalModification();
+            player.updateInventory();
         }
-        return currentView;
     }
 
     public void trackFinalInventoryClose(@NotNull InventoryView closedInventoryView) {
         trackTempInventoryClose(closedInventoryView);
 
         //react with delay
-        Bukkit.getScheduler().runTaskLater(this.compactQuickInventoryAccess, () -> {
-            final Player player = (Player) closedInventoryView.getPlayer();
-            final ModuleInstructionWrapper tracked = this.trackedModuleInstructions.remove(player);
-            if (tracked != null) {
-                final ModuleInstructionWrapper previous = tracked.getPrevious(); //get previous
-
-                InventoryView currentView = null;
-                if (previous != null) {
-                    //track previous
-                    this.trackedModuleInstructions.put(player, previous);
-
-                    //open inventory
-                    currentView = previous.getInventoryOpener().openInventory();
-                }
-                if (currentView == null) {
-                    currentView = player.getOpenInventory();
-                }
-
-                //call final modification
-                tracked.getFinalInventoryCloser().applyFinalModification(currentView);
-            }
-        }, 1);
+        Bukkit.getScheduler().runTaskLater(this.compactQuickInventoryAccess,
+                () -> finalCloseInventory((Player) closedInventoryView.getPlayer()),
+                1);
     }
 
     public boolean trackClick(@NotNull ItemStack clickedItem, @NotNull Player player, int rawSlot) {
@@ -175,9 +148,8 @@ public class ModuleHandler {
 
     public void trackLogout(@NotNull Player player) {
         //close all track stages
-        InventoryView closedInventoryView = player.getOpenInventory();
         do {
-            closedInventoryView = Objects.requireNonNull(finalCloseInventory(closedInventoryView));
+            finalCloseInventory(player);
         } while (this.trackedModuleInstructions.get(player) != null);
     }
 }
