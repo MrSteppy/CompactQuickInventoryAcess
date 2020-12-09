@@ -1,9 +1,7 @@
 package steptech.compactquickinventoryaccess.modules;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
@@ -38,15 +36,8 @@ public class WorkbenchModule implements QuickAccessModule {
     public @NotNull ModuleInstructionWrapper modifyInventory(@NotNull Player player, int rawSlot) {
         final ItemStack workbench = Objects.requireNonNull(QuickAccessModule.takeOneFromItemStack(player.getOpenInventory(), rawSlot));
 
-        return new ModuleInstructionWrapper(() -> player.openWorkbench(null, true), closedView -> {}, () -> {
-            final InventoryView currentView = player.getOpenInventory();
-            final ItemStack slotItem = currentView.getItem(rawSlot);
-            if (slotItem == null || slotItem.getType() == Material.AIR) {
-                currentView.setItem(rawSlot, workbench);
-            } else {
-                final Location location = player.getLocation();
-                location.getWorld().dropItem(location, workbench);
-            }
-        });
+        return new ModuleInstructionWrapper(() -> player.openWorkbench(null, true),
+                closedView -> {},
+                () -> QuickAccessModule.putItemBack(player.getOpenInventory(), workbench, rawSlot));
     }
 }
