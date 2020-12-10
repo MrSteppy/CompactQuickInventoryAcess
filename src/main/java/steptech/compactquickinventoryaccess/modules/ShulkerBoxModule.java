@@ -31,11 +31,11 @@ public class ShulkerBoxModule implements QuickAccessModule {
 
     @Override
     public boolean matchesOtherRequirements(@NotNull Player player) {
-        final boolean permission = player.hasPermission(PERMISSION);
-        if (!permission) {
+        if (!player.hasPermission(PERMISSION)) {
             player.sendActionBar("Missing permission " + PERMISSION);
+            return false;
         }
-        return permission;
+        return true;
     }
 
     @Override

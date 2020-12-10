@@ -24,9 +24,11 @@ public class WorkbenchModule implements QuickAccessModule {
 
     @Override
     public boolean matchesOtherRequirements(@NotNull Player player) {
-        final boolean permission = player.hasPermission(PERMISSION);
-        if (!permission) player.sendActionBar("Missing permission " + PERMISSION);
-        return permission;
+        if (!player.hasPermission(PERMISSION)) {
+            player.sendActionBar("Missing permission " + PERMISSION);
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -23,9 +23,18 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         //handler
         this.moduleHandler = new ModuleHandler(this);
 
+        /*TODO
+        *  SmithingTable
+        *  loom
+        *  fletching table
+        *  Cartography table
+        *  BooksAndQuill
+        *  Grindstone*/
+
         //modules
         final WorkbenchModule workbenchModule = new WorkbenchModule(this.moduleHandler);
         final EnderchestModule enderchestModule = new EnderchestModule(this.moduleHandler);
+        //final AnvilModule anvilModule = new AnvilModule(this.moduleHandler);
         new ShulkerBoxModule(this.moduleHandler);
 
         //listener
@@ -35,6 +44,7 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         final StepTechCommandManager manager = new StepTechCommandManager(this);
         new WorkbenchCommand(manager, workbenchModule, this.moduleHandler);
         new EnderchestCommand(manager, enderchestModule, this.moduleHandler);
+        //new AnvilCommand(manager, anvilModule, this.moduleHandler);
     }
 
     @Override

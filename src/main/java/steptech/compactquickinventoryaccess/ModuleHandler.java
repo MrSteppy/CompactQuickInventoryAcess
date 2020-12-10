@@ -40,7 +40,8 @@ public class ModuleHandler {
     }
 
     private boolean isForbiddenInventory(@NotNull Inventory inventory) {
-        return inventory.getType() == InventoryType.CRAFTING; //you can't open crafting inventories
+        final List<InventoryType> forbiddenTypes = Arrays.asList(InventoryType.CRAFTING, InventoryType.MERCHANT);
+        return forbiddenTypes.contains(inventory.getType());
     }
 
     private @Nullable ModuleInstructionWrapper determineCurrentInventoryView(@NotNull Player player) {
@@ -50,6 +51,15 @@ public class ModuleHandler {
         if (!isForbiddenInventory(topInventory))
             return new ModuleInstructionWrapper(() -> player.openInventory(topInventory), closedView -> {}, () -> {});
         return null;
+    }
+
+    private @Nullable InventoryView openInventory(@NotNull ModuleInstructionWrapper moduleInstructionWrapper) {
+        try {
+            return moduleInstructionWrapper.getInventoryOpener().openInventory();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public boolean activateModule(@NotNull QuickAccessModule module,
@@ -70,7 +80,7 @@ public class ModuleHandler {
                 this.pendingModuleInstructions.put(player, moduleInstructionWrapper);
 
                 //open inventory
-                moduleInstructionWrapper.getInventoryOpener().openInventory();
+                openInventory(moduleInstructionWrapper);
 
             }, 1);
         }
@@ -109,7 +119,7 @@ public class ModuleHandler {
 
             if (previous != null) {
                 //open inventory
-                previous.getInventoryOpener().openInventory();
+                openInventory(previous);
 
                 //track
                 this.trackedModuleInstructions.put(player, previous);

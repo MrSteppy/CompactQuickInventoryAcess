@@ -46,17 +46,17 @@ public class EnderchestModule implements QuickAccessModule {
     @Override
     public boolean matchesOtherRequirements(@NotNull Player player) {
         //check permission
-        final boolean permission = player.hasPermission(PERMISSION);
-        if (!permission) {
+        if (!player.hasPermission(PERMISSION)) {
             player.sendActionBar("Missing permission " + PERMISSION);
+            return false;
         }
         //check for pickaxe
-        final boolean pickaxe = findMatchingPickaxeSlot(player.getOpenInventory()) > -1;
-        if (!pickaxe) {
+        if (!(findMatchingPickaxeSlot(player.getOpenInventory()) > -1)) {
             player.sendActionBar("Diamond or Netherite Pickaxe with SilkTouch needed!");
+            return false;
         }
 
-        return permission && pickaxe;
+        return true;
     }
 
     @Override
