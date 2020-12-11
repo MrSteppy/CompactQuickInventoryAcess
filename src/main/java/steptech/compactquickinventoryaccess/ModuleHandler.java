@@ -47,7 +47,8 @@ public class ModuleHandler {
     private @Nullable ModuleInstructionWrapper determineCurrentInventoryView(@NotNull Player player) {
         final ModuleInstructionWrapper moduleInstructionWrapper = this.trackedModuleInstructions.get(player);
         if (moduleInstructionWrapper != null) return moduleInstructionWrapper;
-        final Inventory topInventory = player.getOpenInventory().getTopInventory();
+        final InventoryView openInventory = player.getOpenInventory();
+        final Inventory topInventory = openInventory.getTopInventory(); //TODO experiment a little bit with double chests
         if (!isForbiddenInventory(topInventory))
             return new ModuleInstructionWrapper(() -> player.openInventory(topInventory), closedView -> {}, () -> {});
         return null;

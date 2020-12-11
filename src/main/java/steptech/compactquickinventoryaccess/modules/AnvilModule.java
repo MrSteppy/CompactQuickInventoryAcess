@@ -23,9 +23,9 @@ public class AnvilModule implements QuickAccessModule {
         return nextLowerState.getMaterial();
     }
 
-    private double anvilGetsDamagedOnUseChance = 0.12;
     private final Map<Player, ItemStack> anvils = new HashMap<>();
     private final Set<Player> playersWithOpenAnvilInventories = new HashSet<>();
+    private double anvilGetsDamagedOnUseChance = 0.12;
 
     public AnvilModule(@NotNull ModuleHandler moduleHandler) {
         moduleHandler.registerModule(this);

@@ -35,7 +35,9 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         //handler
         this.moduleHandler = new ModuleHandler(this);
 
-        /*TODO
+        /*TODO Bugs
+        *  double chests get stuck*/
+        /*TODO Features
         *  SmithingTable
         *  loom
         *  fletching table
