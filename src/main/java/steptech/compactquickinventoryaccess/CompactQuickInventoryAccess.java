@@ -6,7 +6,11 @@ import steptech.compactquickinventoryaccess.commands.AnvilCommand;
 import steptech.compactquickinventoryaccess.commands.EnderchestCommand;
 import steptech.compactquickinventoryaccess.commands.WorkbenchCommand;
 import steptech.compactquickinventoryaccess.commands.compactQuickInventoryAccess.CompactQuickInventoryAccessCommand;
+import steptech.compactquickinventoryaccess.factoryModules.BlockTypeBoundInventoriesFactoryModule;
+import steptech.compactquickinventoryaccess.factoryModules.ContainerFactoryModule;
+import steptech.compactquickinventoryaccess.factoryModules.DoubleChestFactoryModule;
 import steptech.compactquickinventoryaccess.listener.AnvilUseListener;
+import steptech.compactquickinventoryaccess.listener.InteractionListener;
 import steptech.compactquickinventoryaccess.listener.QuickAccessListener;
 import steptech.compactquickinventoryaccess.modules.AnvilModule;
 import steptech.compactquickinventoryaccess.modules.EnderchestModule;
@@ -21,7 +25,9 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
     private static final String ANVIL_DAMAGE_ON_USE_CHANCE_PATH = "anvilDamageOnUseChance";
 
     //handler
+    private FactoryHandler factoryHandler;
     private ModuleHandler moduleHandler;
+
 
     //modules
     private AnvilModule anvilModule;
@@ -33,15 +39,26 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         saveConfig();
 
         //handler
+        this.factoryHandler = new FactoryHandler();
         this.moduleHandler = new ModuleHandler(this);
 
-        /*TODO Features
+        /*TODO FactoryModules
+        *  Enderchest
+        *  Beacon
+        * */
+        /*TODO Modules
         *  SmithingTable
         *  loom
         *  fletching table
         *  Cartography table
         *  BooksAndQuill
-        *  Grindstone*/
+        *  Grindstone
+        * */
+
+        //factory modules
+        new ContainerFactoryModule(this.factoryHandler);
+        new DoubleChestFactoryModule(this.factoryHandler);
+        new BlockTypeBoundInventoriesFactoryModule(this.factoryHandler);
 
         //modules
         this.anvilModule = new AnvilModule(this.moduleHandler);
@@ -53,6 +70,7 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         //listener
         new QuickAccessListener(this);
         new AnvilUseListener(this, anvilModule);
+        new InteractionListener(this);
 
         //commands
         final StepTechCommandManager manager = new StepTechCommandManager(this);
@@ -74,5 +92,9 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
 
     public ModuleHandler getModuleHandler() {
         return moduleHandler;
+    }
+
+    public FactoryHandler getFactoryHandler() {
+        return factoryHandler;
     }
 }

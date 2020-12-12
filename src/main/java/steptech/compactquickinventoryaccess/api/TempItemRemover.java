@@ -2,6 +2,7 @@ package steptech.compactquickinventoryaccess.api;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -14,6 +15,7 @@ import java.util.function.Supplier;
 public class TempItemRemover {
     private final Supplier<@NotNull InventoryView> inventoryViewSupplier;
     private final int rawSlot;
+    private final int slot;
     private final InventoryType topInventoryType;
     private final int topInventorySize;
     private ItemStack removedItem;
@@ -25,6 +27,7 @@ public class TempItemRemover {
 
         //save some data for later
         final InventoryView inventoryView = inventoryViewSupplier.get();
+        this.slot = inventoryView.convertSlot(rawSlot);
         final Inventory topInventory = inventoryView.getTopInventory();
         this.topInventoryType = topInventory.getType();
         this.topInventorySize = topInventory.getSize();
@@ -59,13 +62,20 @@ public class TempItemRemover {
         this.hasBeenPutBack = true;
 
         final InventoryView inventoryView = this.inventoryViewSupplier.get();
-        final ItemStack currentItem = inventoryView.getItem(this.rawSlot);
-        //check if slot is still available and put back
-        if ((hasSimilarProperties(inventoryView) || rawSlotRefersToBottomInventory()) && isEmptySlot(currentItem)) {
-            inventoryView.setItem(this.rawSlot, this.removedItem);
+        checkForSpaceOrDrop(inventoryView.getPlayer(),
+                rawSlotRefersToBottomInventory() ?
+                        inventoryView.getBottomInventory() :
+                        hasSimilarProperties(inventoryView) ?
+                                inventoryView.getTopInventory() :
+                                null,
+                this.slot);
+    }
+
+    private void checkForSpaceOrDrop(@NotNull HumanEntity humanEntity, @Nullable Inventory inventory, int slot) {
+        if (inventory != null && isEmptySlot(inventory.getItem(slot))) {
+            inventory.setItem(slot, this.removedItem);
         } else if (this.removedItem != null) {
-            //drop item
-            final Location location = inventoryView.getPlayer().getLocation();
+            final Location location = humanEntity.getLocation();
             location.getWorld().dropItem(location, this.removedItem);
         }
     }
@@ -76,7 +86,7 @@ public class TempItemRemover {
     }
 
     private boolean rawSlotRefersToBottomInventory() {
-        return this.rawSlot < this.topInventorySize;
+        return this.rawSlot >= this.topInventorySize;
     }
 
     private boolean isEmptySlot(@Nullable ItemStack currentItem) {

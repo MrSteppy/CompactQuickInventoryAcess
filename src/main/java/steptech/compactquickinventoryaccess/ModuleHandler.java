@@ -3,7 +3,6 @@ package steptech.compactquickinventoryaccess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -18,9 +17,11 @@ public class ModuleHandler {
     private final Map<Player, ModuleInstructionWrapper> trackedModuleInstructions = new HashMap<>();
     private final Map<Player, ModuleInstructionWrapper> pendingModuleInstructions = new HashMap<>();
     private final CompactQuickInventoryAccess compactQuickInventoryAccess;
+    private final FactoryHandler factoryHandler;
 
     ModuleHandler(@NotNull CompactQuickInventoryAccess compactQuickInventoryAccess) {
         this.compactQuickInventoryAccess = compactQuickInventoryAccess;
+        this.factoryHandler = compactQuickInventoryAccess.getFactoryHandler();
     }
 
     public void registerModule(@NotNull QuickAccessModule module) {
@@ -48,13 +49,9 @@ public class ModuleHandler {
         return checkSlotType(clickedSlotType) && module.matchesItem(itemStack) && module.matchesOtherRequirements(player);
     }
 
-    private boolean isForbiddenInventory(@NotNull Inventory inventory) {
-        final List<InventoryType> forbiddenTypes = Arrays.asList(InventoryType.CRAFTING, InventoryType.MERCHANT);
-        return forbiddenTypes.contains(inventory.getType());
-    }
-
     private @Nullable ModuleInstructionWrapper determineCurrentInventoryView(@NotNull Player player) {
-        return this.trackedModuleInstructions.get(player); //TODO couple a custom module for this stuff in
+        final ModuleInstructionWrapper moduleInstructionWrapper = this.trackedModuleInstructions.get(player);
+        return moduleInstructionWrapper != null ? moduleInstructionWrapper : this.factoryHandler.createWrapper(player);
     }
 
     @SuppressWarnings("UnusedReturnValue")
