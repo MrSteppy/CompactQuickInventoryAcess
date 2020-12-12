@@ -35,8 +35,17 @@ public class ModuleHandler {
         return Collections.unmodifiableList(this.modules);
     }
 
-    public boolean checkModuleClick(@NotNull QuickAccessModule module, @NotNull ItemStack itemStack, @NotNull Player player) {
-        return module.matchesItem(itemStack) && module.matchesOtherRequirements(player);
+    public boolean checkSlotType(@NotNull InventoryType.SlotType slotType) {
+        final List<InventoryType.SlotType> validSlotTypes = Arrays.asList(InventoryType.SlotType.CONTAINER,
+                InventoryType.SlotType.QUICKBAR);
+        return validSlotTypes.contains(slotType);
+    }
+
+    public boolean checkModuleClick(@NotNull QuickAccessModule module,
+                                    @NotNull ItemStack itemStack,
+                                    @NotNull Player player,
+                                    @NotNull InventoryType.SlotType clickedSlotType) {
+        return checkSlotType(clickedSlotType) && module.matchesItem(itemStack) && module.matchesOtherRequirements(player);
     }
 
     private boolean isForbiddenInventory(@NotNull Inventory inventory) {
@@ -45,15 +54,10 @@ public class ModuleHandler {
     }
 
     private @Nullable ModuleInstructionWrapper determineCurrentInventoryView(@NotNull Player player) {
-        final ModuleInstructionWrapper moduleInstructionWrapper = this.trackedModuleInstructions.get(player);
-        if (moduleInstructionWrapper != null) return moduleInstructionWrapper;
-        final InventoryView openInventory = player.getOpenInventory();
-        final Inventory topInventory = openInventory.getTopInventory(); //TODO experiment a little bit with double chests
-        if (!isForbiddenInventory(topInventory))
-            return new ModuleInstructionWrapper(() -> player.openInventory(topInventory), closedView -> {}, () -> {});
-        return null;
+        return this.trackedModuleInstructions.get(player); //TODO couple a custom module for this stuff in
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     private @Nullable InventoryView openInventory(@NotNull ModuleInstructionWrapper moduleInstructionWrapper) {
         try {
             return moduleInstructionWrapper.getInventoryOpener().openInventory();
@@ -66,8 +70,9 @@ public class ModuleHandler {
     public boolean activateModule(@NotNull QuickAccessModule module,
                                   @NotNull ItemStack activationItem,
                                   @NotNull Player player,
-                                  int clickedRawSlot) {
-        final boolean checkModuleClick = checkModuleClick(module, activationItem, player);
+                                  int clickedRawSlot,
+                                  @NotNull InventoryType.SlotType clickedSlotType) {
+        final boolean checkModuleClick = checkModuleClick(module, activationItem, player, clickedSlotType);
         if (checkModuleClick) {
             //react a tick later
             Bukkit.getScheduler().runTaskLater(this.compactQuickInventoryAccess, () -> {
@@ -141,18 +146,24 @@ public class ModuleHandler {
                 1);
     }
 
-    public boolean trackClick(@NotNull ItemStack clickedItem, @NotNull Player player, int rawSlot) {
+    public boolean trackClick(@NotNull ItemStack clickedItem,
+                              @NotNull Player player,
+                              int rawSlot,
+                              @NotNull InventoryType.SlotType clickedSlotType) {
         for (QuickAccessModule module : getModules()) {
-            if (activateModule(module, clickedItem, player, rawSlot)) return true;
+            if (activateModule(module, clickedItem, player, rawSlot, clickedSlotType)) return true;
         }
         return false;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean trackModule(@NotNull QuickAccessModule module, @NotNull Player player) {
         final List<ItemStack> inventoryContents = QuickAccessModule.getInventoryContents(player);
+        final InventoryView inventoryView = player.getOpenInventory();
         for (int rawSlot = 0; rawSlot < inventoryContents.size(); rawSlot++) {
             final ItemStack itemStack = inventoryContents.get(rawSlot);
-            if (itemStack != null && activateModule(module, itemStack, player, rawSlot)) return true;
+            if (itemStack != null && activateModule(module, itemStack, player, rawSlot, inventoryView.getSlotType(rawSlot)))
+                return true;
         }
         return false;
     }

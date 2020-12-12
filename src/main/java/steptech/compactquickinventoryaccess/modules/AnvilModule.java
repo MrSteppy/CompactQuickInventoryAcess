@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
 import steptech.compactquickinventoryaccess.ModuleHandler;
 import steptech.compactquickinventoryaccess.api.QuickAccessModule;
+import steptech.compactquickinventoryaccess.api.TempItemRemover;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 import java.util.*;
@@ -73,7 +74,8 @@ public class AnvilModule implements QuickAccessModule {
         QuickAccessModule.damageItem(modificationView, findPickaxeSlot(modificationView), 1);
 
         //remove anvil
-        ItemStack anvil = QuickAccessModule.takeOneFromItemStack(modificationView, rawSlot);
+        final TempItemRemover tempItemRemover = new TempItemRemover(player::getOpenInventory, rawSlot);
+        ItemStack anvil = tempItemRemover.getRemovedItem();
         assert anvil != null;
         this.anvils.put(player, anvil);
 
@@ -84,8 +86,10 @@ public class AnvilModule implements QuickAccessModule {
         }, closedView -> this.playersWithOpenAnvilInventories.remove(player), () -> {
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
             final ItemStack storedAnvil = this.anvils.get(player);
-            if (storedAnvil != null)
-                QuickAccessModule.putItemBack(player.getOpenInventory(), storedAnvil, rawSlot);
+            if (storedAnvil != null) {
+                tempItemRemover.setRemovedItem(storedAnvil);
+                tempItemRemover.putItemBack();
+            }
         });
     }
 

@@ -1,7 +1,5 @@
 package steptech.compactquickinventoryaccess.api;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -16,33 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface QuickAccessModule {
-    static @Nullable ItemStack takeOneFromItemStack(@NotNull InventoryView inventoryView, int rawSlot) {
-        final ItemStack itemStack = inventoryView.getItem(rawSlot);
-        if (itemStack != null) {
-            final int amount = itemStack.getAmount();
-            if (amount > 1) {
-                itemStack.setAmount(amount - 1);
-                final ItemStack copy = itemStack.clone();
-                copy.setAmount(1);
-                return copy;
-            } else {
-                inventoryView.setItem(rawSlot, null);
-                return itemStack;
-            }
-        }
-        return null;
-    }
-
-    static void putItemBack(@NotNull InventoryView inventoryView, @NotNull ItemStack itemStack, int rawSlot) {
-        final ItemStack slotItem = inventoryView.getItem(rawSlot);
-        if (slotItem == null || slotItem.getType() == Material.AIR) {
-            inventoryView.setItem(rawSlot, itemStack);
-        } else {
-            final Location location = inventoryView.getPlayer().getLocation();
-            location.getWorld().dropItem(location, itemStack);
-        }
-    }
-
     static void damageItem(@NotNull InventoryView inventoryView, int rawSlot, int damage) {
         final ItemStack itemStack = inventoryView.getItem(rawSlot);
         if (itemStack != null) {

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
 import steptech.compactquickinventoryaccess.ModuleHandler;
 import steptech.compactquickinventoryaccess.api.QuickAccessModule;
+import steptech.compactquickinventoryaccess.api.TempItemRemover;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 public class WorkbenchModule implements QuickAccessModule {
@@ -33,7 +34,8 @@ public class WorkbenchModule implements QuickAccessModule {
 
     @Override
     public @NotNull ModuleInstructionWrapper modifyInventory(@NotNull Player player, int rawSlot) {
-        final ItemStack workbench = QuickAccessModule.takeOneFromItemStack(player.getOpenInventory(), rawSlot);
+        final TempItemRemover tempItemRemover = new TempItemRemover(player::getOpenInventory, rawSlot);
+        final ItemStack workbench = tempItemRemover.getRemovedItem();
         assert workbench != null;
 
         return new ModuleInstructionWrapper(() -> {
@@ -43,7 +45,7 @@ public class WorkbenchModule implements QuickAccessModule {
 
         }, () -> {
             player.playSound(player.getLocation(), Sound.BLOCK_WOOD_BREAK, 1, 1);
-            QuickAccessModule.putItemBack(player.getOpenInventory(), workbench, rawSlot);
+            tempItemRemover.putItemBack();
         });
     }
 }

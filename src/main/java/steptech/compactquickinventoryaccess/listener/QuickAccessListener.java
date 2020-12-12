@@ -36,7 +36,7 @@ public class QuickAccessListener implements Listener {
                     if (currentItem != null && !currentItem.getType().isAir()) { //make sure, we didn't click in the air
 
                         //CLICK HAS BEEN RECOGNISED
-                        if (this.moduleHandler.trackClick(currentItem, player, event.getRawSlot())) {
+                        if (this.moduleHandler.trackClick(currentItem, player, event.getRawSlot(), event.getSlotType())) {
                             event.setCancelled(true);
                         }
                     }

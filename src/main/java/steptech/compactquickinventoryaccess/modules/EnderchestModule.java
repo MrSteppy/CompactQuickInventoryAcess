@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
 import steptech.compactquickinventoryaccess.ModuleHandler;
 import steptech.compactquickinventoryaccess.api.QuickAccessModule;
+import steptech.compactquickinventoryaccess.api.TempItemRemover;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 public class EnderchestModule implements QuickAccessModule {
@@ -67,7 +68,8 @@ public class EnderchestModule implements QuickAccessModule {
         QuickAccessModule.damageItem(modificationView, findMatchingPickaxeSlot(modificationView), 1);
 
         //remove enderchest
-        final ItemStack enderchest = QuickAccessModule.takeOneFromItemStack(modificationView, rawSlot);
+        final TempItemRemover tempItemRemover = new TempItemRemover(player::getOpenInventory, rawSlot);
+        final ItemStack enderchest = tempItemRemover.getRemovedItem();
         assert enderchest != null;
 
         return new ModuleInstructionWrapper(() -> {
@@ -75,7 +77,7 @@ public class EnderchestModule implements QuickAccessModule {
             return player.openInventory(player.getEnderChest());
         }, closedView -> {}, () -> {
             player.playSound(player.getLocation(), Sound.BLOCK_ENDER_CHEST_CLOSE, 1, 1);
-            QuickAccessModule.putItemBack(player.getOpenInventory(), enderchest, rawSlot);
+            tempItemRemover.putItemBack();
         });
     }
 }

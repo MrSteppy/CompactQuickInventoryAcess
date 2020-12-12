@@ -7,7 +7,6 @@ import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
 import steptech.compactquickinventoryaccess.ModuleHandler;
 import steptech.compactquickinventoryaccess.api.QuickAccessModule;
+import steptech.compactquickinventoryaccess.api.TempItemRemover;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 public class ShulkerBoxModule implements QuickAccessModule {
@@ -40,9 +40,9 @@ public class ShulkerBoxModule implements QuickAccessModule {
 
     @Override
     public @NotNull ModuleInstructionWrapper modifyInventory(@NotNull Player player, int rawSlot) {
-        final InventoryView modificationView = player.getOpenInventory();
         //remove shulker box from inventory
-        final ItemStack shulkerBoxItem = QuickAccessModule.takeOneFromItemStack(modificationView, rawSlot);
+        final TempItemRemover tempItemRemover = new TempItemRemover(player::getOpenInventory, rawSlot);
+        final ItemStack shulkerBoxItem = tempItemRemover.getRemovedItem();
         assert shulkerBoxItem != null;
 
         //create shulkerbox from item
@@ -66,7 +66,8 @@ public class ShulkerBoxModule implements QuickAccessModule {
             shulkerBoxItem.setItemMeta(blockStateMeta);
         }, () -> {
             player.playSound(player.getLocation(), Sound.BLOCK_SHULKER_BOX_CLOSE, 1, 1);
-            QuickAccessModule.putItemBack(player.getOpenInventory(), shulkerBoxItem, rawSlot);
+            tempItemRemover.setRemovedItem(shulkerBoxItem);
+            tempItemRemover.putItemBack();
         });
     }
 }
