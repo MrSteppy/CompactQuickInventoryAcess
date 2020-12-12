@@ -11,7 +11,7 @@
 
     <name>CompactQuickInventoryAccess</name>
 
-    <description>Makes it possible to open workbenches, shulkerboxes and enderchests to be opened directly from the
+    <description>Makes it possible to open workbenches, shulker boxes and enderchests to be opened directly from the
         inventory
     </description>
     <properties>

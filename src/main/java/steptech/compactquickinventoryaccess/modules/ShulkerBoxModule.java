@@ -11,17 +11,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
 import steptech.compactquickinventoryaccess.ModuleHandler;
-import steptech.compactquickinventoryaccess.api.QuickAccessModule;
+import steptech.compactquickinventoryaccess.api.AbstractQuickAccessModule;
 import steptech.compactquickinventoryaccess.api.TempItemRemover;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
-public class ShulkerBoxModule implements QuickAccessModule {
-    private static final String PERMISSION = CompactQuickInventoryAccess.PERMISSION_NODE + ".shulkerbox";
-
+public class ShulkerBoxModule extends AbstractQuickAccessModule {
     public ShulkerBoxModule(@NotNull ModuleHandler moduleHandler) {
-        moduleHandler.registerModule(this);
+        super(moduleHandler, "shulkerbox");
     }
 
     @Override
@@ -31,8 +28,8 @@ public class ShulkerBoxModule implements QuickAccessModule {
 
     @Override
     public boolean matchesOtherRequirements(@NotNull Player player) {
-        if (!player.hasPermission(PERMISSION)) {
-            player.sendActionBar("Missing permission " + PERMISSION);
+        if (!hasPermission(player)) {
+            player.sendActionBar("Missing permission " + getPermission());
             return false;
         }
         return true;

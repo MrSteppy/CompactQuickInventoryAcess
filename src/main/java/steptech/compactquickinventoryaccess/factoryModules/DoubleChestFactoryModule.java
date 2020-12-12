@@ -6,13 +6,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import steptech.compactquickinventoryaccess.FactoryHandler;
-import steptech.compactquickinventoryaccess.api.ModuleInstructionFactoryModule;
+import steptech.compactquickinventoryaccess.api.AbstractModuleInstructionFactoryModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 /**
  * Double chests can't be closed currently, so this module only returns a wrapper, which opens none
  */
-public class DoubleChestFactoryModule extends ModuleInstructionFactoryModule {
+public class DoubleChestFactoryModule extends AbstractModuleInstructionFactoryModule {
     public DoubleChestFactoryModule(@NotNull FactoryHandler factoryHandler) {
         super(factoryHandler);
     }

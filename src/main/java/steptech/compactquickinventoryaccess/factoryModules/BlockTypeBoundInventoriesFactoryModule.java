@@ -4,22 +4,20 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import steptech.compactquickinventoryaccess.FactoryHandler;
-import steptech.compactquickinventoryaccess.api.ModuleInstructionFactoryModule;
+import steptech.compactquickinventoryaccess.api.AbstractModuleInstructionFactoryModule;
+import steptech.compactquickinventoryaccess.api.functions.OpenerWrapper;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class BlockTypeBoundInventoriesFactoryModule extends ModuleInstructionFactoryModule {
-    private interface OpenerWrapper {
-        @Nullable InventoryView open(@Nullable Location location, boolean force);
-    }
+public class BlockTypeBoundInventoriesFactoryModule extends AbstractModuleInstructionFactoryModule {
 
+    //TODO pass those values via constructor
     private final Function<Player, Map<InventoryType, OpenerWrapper>> openersProvider = player -> {
         final Map<InventoryType, OpenerWrapper> map = new HashMap<>();
 

@@ -12,6 +12,7 @@ import steptech.compactquickinventoryaccess.api.TempItemRemover;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 public class WorkbenchModule implements QuickAccessModule {
+    //TODO create a new module where an opener is given, also make one which requires a pickaxe
     private static final String PERMISSION = CompactQuickInventoryAccess.PERMISSION_NODE + ".workbench";
 
     public WorkbenchModule(@NotNull ModuleHandler moduleHandler) {

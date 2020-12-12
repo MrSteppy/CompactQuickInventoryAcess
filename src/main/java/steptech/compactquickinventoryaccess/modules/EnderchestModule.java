@@ -7,17 +7,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import steptech.compactquickinventoryaccess.CompactQuickInventoryAccess;
 import steptech.compactquickinventoryaccess.ModuleHandler;
+import steptech.compactquickinventoryaccess.api.AbstractQuickAccessModule;
 import steptech.compactquickinventoryaccess.api.QuickAccessModule;
 import steptech.compactquickinventoryaccess.api.TempItemRemover;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
-public class EnderchestModule implements QuickAccessModule {
-    private static final String PERMISSION = CompactQuickInventoryAccess.PERMISSION_NODE + ".enderchest";
-
+public class EnderchestModule extends AbstractQuickAccessModule {
     public EnderchestModule(@NotNull ModuleHandler moduleHandler) {
-        moduleHandler.registerModule(this);
+        super(moduleHandler, "enderchest");
     }
 
     @Override
@@ -47,8 +45,8 @@ public class EnderchestModule implements QuickAccessModule {
     @Override
     public boolean matchesOtherRequirements(@NotNull Player player) {
         //check permission
-        if (!player.hasPermission(PERMISSION)) {
-            player.sendActionBar("Missing permission " + PERMISSION);
+        if (!hasPermission(player)) {
+            player.sendActionBar("Missing permission " + getPermission());
             return false;
         }
         //check for pickaxe

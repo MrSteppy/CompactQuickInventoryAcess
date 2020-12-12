@@ -7,10 +7,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import steptech.compactquickinventoryaccess.FactoryHandler;
-import steptech.compactquickinventoryaccess.api.ModuleInstructionFactoryModule;
+import steptech.compactquickinventoryaccess.api.AbstractModuleInstructionFactoryModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
-public class ContainerFactoryModule extends ModuleInstructionFactoryModule {
+public class ContainerFactoryModule extends AbstractModuleInstructionFactoryModule {
     public ContainerFactoryModule(@NotNull FactoryHandler factoryHandler) {
         super(factoryHandler);
     }
