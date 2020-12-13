@@ -1,4 +1,4 @@
-package steptech.compactquickinventoryaccess.api;
+package steptech.compactquickinventoryaccess.api.quickAccessModule;
 
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;

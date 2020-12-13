@@ -4,7 +4,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import steptech.compactquickinventoryaccess.api.ModuleInstructionFactoryModule;
+import steptech.compactquickinventoryaccess.api.moduleInstructionFactoryModule.ModuleInstructionFactoryModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 import java.util.*;

@@ -12,8 +12,8 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.ModuleHandler;
-import steptech.compactquickinventoryaccess.api.AbstractQuickAccessModule;
 import steptech.compactquickinventoryaccess.api.TempItemRemover;
+import steptech.compactquickinventoryaccess.api.quickAccessModule.AbstractQuickAccessModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 public class ShulkerBoxModule extends AbstractQuickAccessModule {

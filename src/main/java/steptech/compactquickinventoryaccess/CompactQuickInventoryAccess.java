@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.java.JavaPlugin;
+import steptech.compactquickinventoryaccess.api.ModuleFactory;
 import steptech.compactquickinventoryaccess.commands.AnvilCommand;
 import steptech.compactquickinventoryaccess.commands.EnderchestCommand;
 import steptech.compactquickinventoryaccess.commands.compactQuickInventoryAccess.CompactQuickInventoryAccessCommand;
@@ -13,10 +14,7 @@ import steptech.compactquickinventoryaccess.factoryModules.DoubleChestFactoryMod
 import steptech.compactquickinventoryaccess.listener.AnvilUseListener;
 import steptech.compactquickinventoryaccess.listener.InteractionListener;
 import steptech.compactquickinventoryaccess.listener.QuickAccessListener;
-import steptech.compactquickinventoryaccess.modules.AnvilModule;
-import steptech.compactquickinventoryaccess.modules.EnderchestModule;
-import steptech.compactquickinventoryaccess.modules.NoToolOpenInventoryMethodModule;
-import steptech.compactquickinventoryaccess.modules.ShulkerBoxModule;
+import steptech.compactquickinventoryaccess.modules.*;
 import steptech.steptechpluginframework.infrastructure.commands.commandManager.StepTechCommandManager;
 
 public final class CompactQuickInventoryAccess extends JavaPlugin {
@@ -47,16 +45,13 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         *  Beacon
         * */
         /*TODO Module
-        *  fletching table
         *  BooksAndQuill
-        *  Grindstone
-        *  stone cutter
         * */
 
         //factory modules
         new ContainerFactoryModule(this.factoryHandler);
         new DoubleChestFactoryModule(this.factoryHandler);
-        BlockTypeBoundInventoriesFactoryModule.createFactoryModules(factoryHandler, map -> {
+        new ModuleFactory<>(BlockTypeBoundInventoriesFactoryModule::new).createModules(this.factoryHandler, map -> {
             map.put(InventoryType.ANVIL, player -> player::openAnvil);
             map.put(InventoryType.WORKBENCH, player -> player::openWorkbench);
             map.put(InventoryType.GRINDSTONE, player -> player::openGrindstone);
@@ -69,11 +64,15 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         });
 
         //modules
-        NoToolOpenInventoryMethodModule.createModules(this.moduleHandler, map -> {
+        new ModuleFactory<>(NoToolOpenInventoryMethodModule::new).createModules(this.moduleHandler, map -> {
             map.put(Material.CRAFTING_TABLE, player -> player::openWorkbench);
             map.put(Material.CARTOGRAPHY_TABLE, player -> player::openCartographyTable);
             map.put(Material.LOOM, player -> player::openLoom);
             map.put(Material.SMITHING_TABLE, player -> player::openSmithingTable);
+        });
+        new ModuleFactory<>(PickaxeOpenInventoryMethodModule::new).createModules(this.moduleHandler, map -> {
+            map.put(Material.GRINDSTONE, player -> player::openGrindstone);
+            map.put(Material.STONECUTTER, player -> player::openStonecutter);
         });
         this.anvilModule = new AnvilModule(this.moduleHandler);
         final EnderchestModule enderchestModule = new EnderchestModule(this.moduleHandler);

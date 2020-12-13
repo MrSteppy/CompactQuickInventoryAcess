@@ -7,7 +7,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import steptech.compactquickinventoryaccess.api.QuickAccessModule;
+import steptech.compactquickinventoryaccess.api.quickAccessModule.QuickAccessModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 import java.util.*;

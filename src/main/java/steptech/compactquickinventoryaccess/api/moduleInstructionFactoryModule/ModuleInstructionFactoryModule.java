@@ -1,4 +1,4 @@
-package steptech.compactquickinventoryaccess.api;
+package steptech.compactquickinventoryaccess.api.moduleInstructionFactoryModule;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

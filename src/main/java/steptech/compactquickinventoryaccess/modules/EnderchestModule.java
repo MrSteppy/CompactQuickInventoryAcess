@@ -8,9 +8,9 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.ModuleHandler;
-import steptech.compactquickinventoryaccess.api.AbstractQuickAccessModule;
-import steptech.compactquickinventoryaccess.api.QuickAccessModule;
 import steptech.compactquickinventoryaccess.api.TempItemRemover;
+import steptech.compactquickinventoryaccess.api.quickAccessModule.AbstractQuickAccessModule;
+import steptech.compactquickinventoryaccess.api.quickAccessModule.QuickAccessModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 public class EnderchestModule extends AbstractQuickAccessModule {

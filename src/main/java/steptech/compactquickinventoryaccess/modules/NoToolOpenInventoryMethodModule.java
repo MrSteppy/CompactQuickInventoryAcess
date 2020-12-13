@@ -5,31 +5,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.ModuleHandler;
-import steptech.compactquickinventoryaccess.api.AbstractQuickAccessModule;
 import steptech.compactquickinventoryaccess.api.TempItemRemover;
 import steptech.compactquickinventoryaccess.api.functions.OpenInventoryMethod;
+import steptech.compactquickinventoryaccess.api.quickAccessModule.AbstractQuickAccessModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class NoToolOpenInventoryMethodModule extends AbstractQuickAccessModule {
-    public static @NotNull List<NoToolOpenInventoryMethodModule> createModules(
-            @NotNull ModuleHandler moduleHandler,
-            @NotNull Consumer<@NotNull Map<@NotNull Material, @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod>>> modulesToCreate) {
-        final Map<Material, Function<Player, OpenInventoryMethod>> map = new HashMap<>();
-        modulesToCreate.accept(map);
-        final List<NoToolOpenInventoryMethodModule> modules = new ArrayList<>();
-        map.forEach((material, playerOpenInventoryMethodFunction) -> modules.add(
-                new NoToolOpenInventoryMethodModule(moduleHandler, material, playerOpenInventoryMethodFunction)
-        ));
-        return modules;
-    }
-
     protected final Material matchingItemMaterial;
     protected final Function<Player, OpenInventoryMethod> openInventory;
 
@@ -51,6 +34,7 @@ public class NoToolOpenInventoryMethodModule extends AbstractQuickAccessModule {
      * @param player The {@link Player} to check
      * @return If the given {@link Player} matches other requirements besides the permission
      */
+    @SuppressWarnings("SameReturnValue")
     protected boolean checkOtherRequirementsBesidesPermission(@NotNull Player player) {
         return true;
     }
@@ -69,6 +53,7 @@ public class NoToolOpenInventoryMethodModule extends AbstractQuickAccessModule {
      * @param player The {@link Player} to apply the modifications to
      * @param rawSlot The raw slot from which the clicked item has been removed
      */
+    @SuppressWarnings("EmptyMethod")
     protected void applyOtherModifications(@NotNull Player player, int rawSlot) {
 
     }
@@ -81,7 +66,7 @@ public class NoToolOpenInventoryMethodModule extends AbstractQuickAccessModule {
 
         applyOtherModifications(player, rawSlot);
 
-        return new ModuleInstructionWrapper(() -> this.openInventory.apply(player).open(player.getLocation(), false),
+        return new ModuleInstructionWrapper(() -> this.openInventory.apply(player).open(player.getLocation(), true),
                 closedView -> {},
                 tempItemRemover::putItemBack);
     }

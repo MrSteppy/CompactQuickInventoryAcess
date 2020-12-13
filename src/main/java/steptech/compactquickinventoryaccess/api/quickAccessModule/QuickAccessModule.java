@@ -1,4 +1,4 @@
-package steptech.compactquickinventoryaccess.api;
+package steptech.compactquickinventoryaccess.api.quickAccessModule;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;

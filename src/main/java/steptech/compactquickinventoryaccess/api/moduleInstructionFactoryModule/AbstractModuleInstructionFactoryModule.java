@@ -1,4 +1,4 @@
-package steptech.compactquickinventoryaccess.api;
+package steptech.compactquickinventoryaccess.api.moduleInstructionFactoryModule;
 
 import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.FactoryHandler;

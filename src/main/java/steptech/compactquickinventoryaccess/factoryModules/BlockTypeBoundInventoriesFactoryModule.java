@@ -7,31 +7,13 @@ import org.bukkit.event.inventory.InventoryType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import steptech.compactquickinventoryaccess.FactoryHandler;
-import steptech.compactquickinventoryaccess.api.AbstractModuleInstructionFactoryModule;
 import steptech.compactquickinventoryaccess.api.functions.OpenInventoryMethod;
+import steptech.compactquickinventoryaccess.api.moduleInstructionFactoryModule.AbstractModuleInstructionFactoryModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class BlockTypeBoundInventoriesFactoryModule extends AbstractModuleInstructionFactoryModule {
-    @SuppressWarnings("UnusedReturnValue")
-    public static @NotNull List<BlockTypeBoundInventoriesFactoryModule> createFactoryModules(
-            @NotNull FactoryHandler factoryHandler,
-            @NotNull Consumer<@NotNull Map<@NotNull InventoryType, @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod>>> factoryModulesToCreate) {
-        final Map<InventoryType, Function<Player, OpenInventoryMethod>> map = new HashMap<>();
-        factoryModulesToCreate.accept(map);
-        final List<BlockTypeBoundInventoriesFactoryModule> factoryModules = new ArrayList<>();
-        map.forEach((type, playerOpenInventoryMethodFunction) -> factoryModules.add(
-                new BlockTypeBoundInventoriesFactoryModule(factoryHandler, type, playerOpenInventoryMethodFunction)
-        ));
-        return factoryModules;
-    }
-
     protected final InventoryType inventoryType;
     protected final Function<Player, OpenInventoryMethod> openInventory;
 
