@@ -9,13 +9,17 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.ModuleHandler;
 import steptech.compactquickinventoryaccess.api.TempItemRemover;
-import steptech.compactquickinventoryaccess.api.quickAccessModule.AbstractQuickAccessModule;
+import steptech.compactquickinventoryaccess.api.commandModule.AbstractCommandModule;
 import steptech.compactquickinventoryaccess.api.quickAccessModule.QuickAccessModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
-public class EnderchestModule extends AbstractQuickAccessModule {
+public class EnderchestModule extends AbstractCommandModule {
     public EnderchestModule(@NotNull ModuleHandler moduleHandler) {
-        super(moduleHandler, "enderchest");
+        super(moduleHandler,
+                "enderchest",
+                player -> player.openInventory(player.getEnderChest()),
+                "You need at least one enderchest!",
+                "ec");
     }
 
     @Override

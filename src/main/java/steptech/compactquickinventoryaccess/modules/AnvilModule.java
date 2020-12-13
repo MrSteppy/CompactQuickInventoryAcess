@@ -12,7 +12,7 @@ import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper
 
 import java.util.*;
 
-public class AnvilModule extends PickaxeOpenInventoryMethodModule {
+public class AnvilModule extends PickaxeOIMModule {
 
     public static @NotNull Material getNextAnvilDamageStateMaterial(@NotNull ItemStack anvil) throws IllegalArgumentException, IndexOutOfBoundsException {
         final AnvilDamagedEvent.DamageState currentState = AnvilDamagedEvent.DamageState.getState(anvil.getType()); //throws illegal argument when material is not anvil

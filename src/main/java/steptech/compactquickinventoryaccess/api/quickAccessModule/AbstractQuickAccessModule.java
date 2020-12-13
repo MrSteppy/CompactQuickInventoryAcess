@@ -15,10 +15,12 @@ public abstract class AbstractQuickAccessModule implements QuickAccessModule {
         moduleHandler.registerModule(this);
     }
 
-    //TODO createCommand()
-
     public @NotNull String getPermission() {
         return MODULE_PERMISSION_NODE + "." + this.subPermission;
+    }
+
+    public @NotNull String getSubPermission() {
+        return subPermission;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

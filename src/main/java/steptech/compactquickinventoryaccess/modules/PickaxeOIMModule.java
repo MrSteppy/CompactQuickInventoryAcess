@@ -11,10 +11,10 @@ import steptech.compactquickinventoryaccess.api.quickAccessModule.QuickAccessMod
 
 import java.util.function.Function;
 
-public class PickaxeOpenInventoryMethodModule extends NoToolOpenInventoryMethodModule {
-    public PickaxeOpenInventoryMethodModule(@NotNull ModuleHandler moduleHandler,
-                                            @NotNull Material matchingItemMaterial,
-                                            @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod> openInventory) {
+public class PickaxeOIMModule extends NoToolOIMModule {
+    public PickaxeOIMModule(@NotNull ModuleHandler moduleHandler,
+                            @NotNull Material matchingItemMaterial,
+                            @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod> openInventory) {
         super(moduleHandler, matchingItemMaterial, openInventory);
     }
 

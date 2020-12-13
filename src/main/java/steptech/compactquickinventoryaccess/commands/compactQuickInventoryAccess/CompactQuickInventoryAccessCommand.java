@@ -10,7 +10,7 @@ public class CompactQuickInventoryAccessCommand extends StepTechCommand {
         super("compactquickinventoryacess", registrar);
 
         setAliases("cqia");
-        setPermission(CompactQuickInventoryAccess.COMMAND_PERMISSION_NODE);
+        setPermission(CompactQuickInventoryAccess.COMMAND_PERMISSION_NODE + "." + "menu");
         setDescription("The menu for this plugin");
 
         new ReloadCommand(this, compactQuickInventoryAccess);

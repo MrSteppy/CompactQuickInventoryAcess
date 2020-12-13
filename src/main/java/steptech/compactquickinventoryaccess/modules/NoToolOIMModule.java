@@ -6,20 +6,27 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import steptech.compactquickinventoryaccess.ModuleHandler;
 import steptech.compactquickinventoryaccess.api.TempItemRemover;
+import steptech.compactquickinventoryaccess.api.commandModule.AbstractCommandModule;
 import steptech.compactquickinventoryaccess.api.functions.OpenInventoryMethod;
-import steptech.compactquickinventoryaccess.api.quickAccessModule.AbstractQuickAccessModule;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
 import java.util.function.Function;
 
-public class NoToolOpenInventoryMethodModule extends AbstractQuickAccessModule {
+public class NoToolOIMModule extends AbstractCommandModule {
+    private static @NotNull String getName(@NotNull Material material) {
+        return material.name().toLowerCase().replace("_", "");
+    }
+
     protected final Material matchingItemMaterial;
     protected final Function<Player, OpenInventoryMethod> openInventory;
 
-    public NoToolOpenInventoryMethodModule(@NotNull ModuleHandler moduleHandler,
-                                           @NotNull Material matchingItemMaterial,
-                                           @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod> openInventory) {
-        super(moduleHandler, matchingItemMaterial.name().toLowerCase());
+    public NoToolOIMModule(@NotNull ModuleHandler moduleHandler,
+                           @NotNull Material matchingItemMaterial,
+                           @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod> openInventory) {
+        super(moduleHandler,
+                getName(matchingItemMaterial),
+                player -> openInventory.apply(player).open(null, true),
+                "You need at least one " + getName(matchingItemMaterial) + "!");
         this.matchingItemMaterial = matchingItemMaterial;
         this.openInventory = openInventory;
     }
