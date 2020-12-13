@@ -1,10 +1,11 @@
 package steptech.compactquickinventoryaccess;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.java.JavaPlugin;
 import steptech.compactquickinventoryaccess.commands.AnvilCommand;
 import steptech.compactquickinventoryaccess.commands.EnderchestCommand;
-import steptech.compactquickinventoryaccess.commands.WorkbenchCommand;
 import steptech.compactquickinventoryaccess.commands.compactQuickInventoryAccess.CompactQuickInventoryAccessCommand;
 import steptech.compactquickinventoryaccess.factoryModules.BlockTypeBoundInventoriesFactoryModule;
 import steptech.compactquickinventoryaccess.factoryModules.ContainerFactoryModule;
@@ -14,8 +15,8 @@ import steptech.compactquickinventoryaccess.listener.InteractionListener;
 import steptech.compactquickinventoryaccess.listener.QuickAccessListener;
 import steptech.compactquickinventoryaccess.modules.AnvilModule;
 import steptech.compactquickinventoryaccess.modules.EnderchestModule;
+import steptech.compactquickinventoryaccess.modules.NoToolOpenInventoryMethodModule;
 import steptech.compactquickinventoryaccess.modules.ShulkerBoxModule;
-import steptech.compactquickinventoryaccess.modules.WorkbenchModule;
 import steptech.steptechpluginframework.infrastructure.commands.commandManager.StepTechCommandManager;
 
 public final class CompactQuickInventoryAccess extends JavaPlugin {
@@ -43,28 +44,39 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         this.moduleHandler = new ModuleHandler(this);
 
         /*TODO FactoryModules
-        *  Enderchest
         *  Beacon
         * */
-        /*TODO Modules
-        *  SmithingTable
-        *  loom
+        /*TODO Module
         *  fletching table
-        *  Cartography table
         *  BooksAndQuill
         *  Grindstone
+        *  stone cutter
         * */
 
         //factory modules
         new ContainerFactoryModule(this.factoryHandler);
         new DoubleChestFactoryModule(this.factoryHandler);
-        new BlockTypeBoundInventoriesFactoryModule(this.factoryHandler);
+        BlockTypeBoundInventoriesFactoryModule.createFactoryModules(factoryHandler, map -> {
+            map.put(InventoryType.ANVIL, player -> player::openAnvil);
+            map.put(InventoryType.WORKBENCH, player -> player::openWorkbench);
+            map.put(InventoryType.GRINDSTONE, player -> player::openGrindstone);
+            map.put(InventoryType.CARTOGRAPHY, player -> player::openCartographyTable);
+            map.put(InventoryType.ENCHANTING, player -> player::openEnchanting);
+            map.put(InventoryType.LOOM, player -> player::openLoom);
+            map.put(InventoryType.SMITHING, player -> player::openSmithingTable);
+            map.put(InventoryType.STONECUTTER, player -> player::openStonecutter);
+            map.put(InventoryType.ENDER_CHEST, player -> (location, force) -> player.openInventory(player.getEnderChest()));
+        });
 
         //modules
+        NoToolOpenInventoryMethodModule.createModules(this.moduleHandler, map -> {
+            map.put(Material.CRAFTING_TABLE, player -> player::openWorkbench);
+            map.put(Material.CARTOGRAPHY_TABLE, player -> player::openCartographyTable);
+            map.put(Material.LOOM, player -> player::openLoom);
+            map.put(Material.SMITHING_TABLE, player -> player::openSmithingTable);
+        });
         this.anvilModule = new AnvilModule(this.moduleHandler);
-        final WorkbenchModule workbenchModule = new WorkbenchModule(this.moduleHandler);
         final EnderchestModule enderchestModule = new EnderchestModule(this.moduleHandler);
-
         new ShulkerBoxModule(this.moduleHandler);
 
         //listener
@@ -75,7 +87,6 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         //commands
         final StepTechCommandManager manager = new StepTechCommandManager(this);
         new CompactQuickInventoryAccessCommand(manager, this);
-        new WorkbenchCommand(manager, workbenchModule, this.moduleHandler);
         new EnderchestCommand(manager, enderchestModule, this.moduleHandler);
         new AnvilCommand(manager, this.anvilModule, this.moduleHandler);
     }

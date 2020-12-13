@@ -8,47 +8,48 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import steptech.compactquickinventoryaccess.FactoryHandler;
 import steptech.compactquickinventoryaccess.api.AbstractModuleInstructionFactoryModule;
-import steptech.compactquickinventoryaccess.api.functions.OpenerWrapper;
+import steptech.compactquickinventoryaccess.api.functions.OpenInventoryMethod;
 import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class BlockTypeBoundInventoriesFactoryModule extends AbstractModuleInstructionFactoryModule {
+    @SuppressWarnings("UnusedReturnValue")
+    public static @NotNull List<BlockTypeBoundInventoriesFactoryModule> createFactoryModules(
+            @NotNull FactoryHandler factoryHandler,
+            @NotNull Consumer<@NotNull Map<@NotNull InventoryType, @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod>>> factoryModulesToCreate) {
+        final Map<InventoryType, Function<Player, OpenInventoryMethod>> map = new HashMap<>();
+        factoryModulesToCreate.accept(map);
+        final List<BlockTypeBoundInventoriesFactoryModule> factoryModules = new ArrayList<>();
+        map.forEach((type, playerOpenInventoryMethodFunction) -> factoryModules.add(
+                new BlockTypeBoundInventoriesFactoryModule(factoryHandler, type, playerOpenInventoryMethodFunction)
+        ));
+        return factoryModules;
+    }
 
-    //TODO pass those values via constructor
-    private final Function<Player, Map<InventoryType, OpenerWrapper>> openersProvider = player -> {
-        final Map<InventoryType, OpenerWrapper> map = new HashMap<>();
+    protected final InventoryType inventoryType;
+    protected final Function<Player, OpenInventoryMethod> openInventory;
 
-        //register inventory types here
-        map.put(InventoryType.ANVIL, player::openAnvil);
-        map.put(InventoryType.WORKBENCH, player::openWorkbench);
-        map.put(InventoryType.GRINDSTONE, player::openGrindstone);
-        map.put(InventoryType.CARTOGRAPHY, player::openCartographyTable);
-        map.put(InventoryType.ENCHANTING, player::openEnchanting);
-        map.put(InventoryType.LOOM, player::openLoom);
-        map.put(InventoryType.SMITHING, player::openSmithingTable);
-        map.put(InventoryType.STONECUTTER, player::openStonecutter);
-        map.put(InventoryType.ENDER_CHEST, (location, force) -> player.openInventory(player.getEnderChest()));
-
-        return map;
-    };
-
-    public BlockTypeBoundInventoriesFactoryModule(@NotNull FactoryHandler factoryHandler) {
+    public BlockTypeBoundInventoriesFactoryModule(@NotNull FactoryHandler factoryHandler,
+                                                  @NotNull InventoryType inventoryType,
+                                                  @NotNull Function<Player, @NotNull OpenInventoryMethod> openInventory) {
         super(factoryHandler);
+        this.inventoryType = inventoryType;
+        this.openInventory = openInventory;
     }
 
     @Override
     public @Nullable ModuleInstructionWrapper createWrapper(@NotNull Player player, @Nullable Block lastInteractedBlock) {
-        if (lastInteractedBlock != null) {
+        if (lastInteractedBlock != null && player.getOpenInventory().getType() == this.inventoryType) {
             final Location location = lastInteractedBlock.getLocation();
-            final OpenerWrapper openerWrapper = this.openersProvider.apply(player).get(player.getOpenInventory().getType());
-            if (openerWrapper != null) {
-                return new ModuleInstructionWrapper(() -> openerWrapper.open(location, false),
-                        closedView -> {},
-                        () -> {});
-            }
+            return new ModuleInstructionWrapper(() -> this.openInventory.apply(player).open(location, false),
+                    closedView -> {},
+                    () -> {});
         }
         return null;
     }
