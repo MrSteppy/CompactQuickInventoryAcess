@@ -14,8 +14,9 @@ import java.util.function.Function;
 public class PickaxeOIMModule extends NoToolOIMModule {
     public PickaxeOIMModule(@NotNull ModuleHandler moduleHandler,
                             @NotNull Material matchingItemMaterial,
-                            @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod> openInventory) {
-        super(moduleHandler, matchingItemMaterial, openInventory);
+                            @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod> openInventory,
+                            @NotNull String... aliases) {
+        super(moduleHandler, matchingItemMaterial, openInventory, aliases);
     }
 
     public boolean isPickaxe(@NotNull ItemStack itemStack) {

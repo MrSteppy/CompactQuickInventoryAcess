@@ -13,13 +13,13 @@ import steptech.compactquickinventoryaccess.api.wrapper.ModuleInstructionWrapper
 
 import java.util.function.Function;
 
-public class BlockTypeBoundInventoriesFactoryModule extends AbstractModuleInstructionFactoryModule {
+public class OIMFactoryModule extends AbstractModuleInstructionFactoryModule {
     protected final InventoryType inventoryType;
     protected final Function<Player, OpenInventoryMethod> openInventory;
 
-    public BlockTypeBoundInventoriesFactoryModule(@NotNull FactoryHandler factoryHandler,
-                                                  @NotNull InventoryType inventoryType,
-                                                  @NotNull Function<Player, @NotNull OpenInventoryMethod> openInventory) {
+    public OIMFactoryModule(@NotNull FactoryHandler factoryHandler,
+                            @NotNull InventoryType inventoryType,
+                            @NotNull Function<Player, @NotNull OpenInventoryMethod> openInventory) {
         super(factoryHandler);
         this.inventoryType = inventoryType;
         this.openInventory = openInventory;

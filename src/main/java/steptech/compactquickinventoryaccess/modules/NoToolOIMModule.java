@@ -22,11 +22,13 @@ public class NoToolOIMModule extends AbstractCommandModule {
 
     public NoToolOIMModule(@NotNull ModuleHandler moduleHandler,
                            @NotNull Material matchingItemMaterial,
-                           @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod> openInventory) {
+                           @NotNull Function<@NotNull Player, @NotNull OpenInventoryMethod> openInventory,
+                           @NotNull String... aliases) {
         super(moduleHandler,
                 getName(matchingItemMaterial),
                 player -> openInventory.apply(player).open(null, true),
-                "You need at least one " + getName(matchingItemMaterial) + "!");
+                "You need at least one " + getName(matchingItemMaterial) + "!",
+                aliases);
         this.matchingItemMaterial = matchingItemMaterial;
         this.openInventory = openInventory;
     }

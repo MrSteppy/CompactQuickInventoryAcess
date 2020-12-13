@@ -5,17 +5,20 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import steptech.compactquickinventoryaccess.api.ModuleFactory;
 import steptech.compactquickinventoryaccess.api.commandModule.CommandModule;
 import steptech.compactquickinventoryaccess.commands.CommandModuleCommand;
 import steptech.compactquickinventoryaccess.commands.compactQuickInventoryAccess.CompactQuickInventoryAccessCommand;
-import steptech.compactquickinventoryaccess.factoryModules.BlockTypeBoundInventoriesFactoryModule;
+import steptech.compactquickinventoryaccess.factories.NoToolOIMModuleFactory;
+import steptech.compactquickinventoryaccess.factories.OIMFactoryModuleFactory;
+import steptech.compactquickinventoryaccess.factories.PickaxeOIMModuleFactory;
 import steptech.compactquickinventoryaccess.factoryModules.ContainerFactoryModule;
 import steptech.compactquickinventoryaccess.factoryModules.DoubleChestFactoryModule;
 import steptech.compactquickinventoryaccess.listener.AnvilUseListener;
 import steptech.compactquickinventoryaccess.listener.InteractionListener;
 import steptech.compactquickinventoryaccess.listener.QuickAccessListener;
-import steptech.compactquickinventoryaccess.modules.*;
+import steptech.compactquickinventoryaccess.modules.AnvilModule;
+import steptech.compactquickinventoryaccess.modules.EnderchestModule;
+import steptech.compactquickinventoryaccess.modules.ShulkerBoxModule;
 import steptech.steptechpluginframework.infrastructure.commands.commandManager.StepTechCommandManager;
 
 import java.util.List;
@@ -50,34 +53,34 @@ public final class CompactQuickInventoryAccess extends JavaPlugin {
         * */
         /*TODO Module
         *  BooksAndQuill
+        *  finished books
         * */
 
         //factory modules
         new ContainerFactoryModule(this.factoryHandler);
         new DoubleChestFactoryModule(this.factoryHandler);
-        new ModuleFactory<>(BlockTypeBoundInventoriesFactoryModule::new).createModules(this.factoryHandler, map -> {
-            map.put(InventoryType.ANVIL, player -> player::openAnvil);
-            map.put(InventoryType.WORKBENCH, player -> player::openWorkbench);
-            map.put(InventoryType.GRINDSTONE, player -> player::openGrindstone);
-            map.put(InventoryType.CARTOGRAPHY, player -> player::openCartographyTable);
-            map.put(InventoryType.ENCHANTING, player -> player::openEnchanting);
-            map.put(InventoryType.LOOM, player -> player::openLoom);
-            map.put(InventoryType.SMITHING, player -> player::openSmithingTable);
-            map.put(InventoryType.STONECUTTER, player -> player::openStonecutter);
-            map.put(InventoryType.ENDER_CHEST, player -> (location, force) -> player.openInventory(player.getEnderChest()));
-        });
+        final OIMFactoryModuleFactory oimFactoryModuleFactory = new OIMFactoryModuleFactory(this.factoryHandler);
+        oimFactoryModuleFactory.create(InventoryType.ANVIL, player -> player::openAnvil);
+        oimFactoryModuleFactory.create(InventoryType.WORKBENCH, player -> player::openWorkbench);
+        oimFactoryModuleFactory.create(InventoryType.GRINDSTONE, player -> player::openGrindstone);
+        oimFactoryModuleFactory.create(InventoryType.CARTOGRAPHY, player -> player::openCartographyTable);
+        oimFactoryModuleFactory.create(InventoryType.ENCHANTING, player -> player::openEnchanting);
+        oimFactoryModuleFactory.create(InventoryType.LOOM, player -> player::openLoom);
+        oimFactoryModuleFactory.create(InventoryType.SMITHING, player -> player::openSmithingTable);
+        oimFactoryModuleFactory.create(InventoryType.STONECUTTER, player -> player::openStonecutter);
+        oimFactoryModuleFactory.create(InventoryType.ENDER_CHEST, player -> (location, force) -> player.openInventory(player.getEnderChest()));
 
         //modules
-        new ModuleFactory<>(NoToolOIMModule::new).createModules(this.moduleHandler, map -> {
-            map.put(Material.CRAFTING_TABLE, player -> player::openWorkbench);
-            map.put(Material.CARTOGRAPHY_TABLE, player -> player::openCartographyTable);
-            map.put(Material.LOOM, player -> player::openLoom);
-            map.put(Material.SMITHING_TABLE, player -> player::openSmithingTable);
-        });
-        new ModuleFactory<>(PickaxeOIMModule::new).createModules(this.moduleHandler, map -> {
-            map.put(Material.GRINDSTONE, player -> player::openGrindstone);
-            map.put(Material.STONECUTTER, player -> player::openStonecutter);
-        });
+        final NoToolOIMModuleFactory noToolOIMModuleFactory = new NoToolOIMModuleFactory(this.moduleHandler);
+        noToolOIMModuleFactory.create(Material.CRAFTING_TABLE, player -> player::openWorkbench, "workbench", "wb");
+        noToolOIMModuleFactory.create(Material.CARTOGRAPHY_TABLE, player -> player::openCartographyTable);
+        noToolOIMModuleFactory.create(Material.LOOM, player -> player::openLoom);
+        noToolOIMModuleFactory.create(Material.SMITHING_TABLE, player -> player::openSmithingTable);
+
+        final PickaxeOIMModuleFactory pickaxeOIMModuleFactory = new PickaxeOIMModuleFactory(this.moduleHandler);
+        pickaxeOIMModuleFactory.create(Material.GRINDSTONE, player -> player::openGrindstone);
+        pickaxeOIMModuleFactory.create(Material.STONECUTTER, player -> player::openStonecutter);
+
         this.anvilModule = new AnvilModule(this.moduleHandler);
         new EnderchestModule(this.moduleHandler);
         new ShulkerBoxModule(this.moduleHandler);
